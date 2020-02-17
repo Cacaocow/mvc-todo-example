@@ -53,10 +53,12 @@ public class TodoListController {
         controller.init(todo);
         controller.addTodoCreateListener(e -> addTodo(e.getTodo()));
         controller.showView(true);
+        LOG.debug("Opened new create/edit view: {}", todo != null ? todo.getName() : "Create Todo");
     }
 
     private void addTodo(Todo todo) {
         model.add(todo);
         refreshViewModel();
+        LOG.debug("Added new todo: {}", todo.getName());
     }
 }

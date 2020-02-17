@@ -2,6 +2,8 @@ package com.cacaocow.mvcexample.view;
 
 import com.cacaocow.mvcexample.model.Todo;
 import lombok.var;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.swing.*;
 import java.time.LocalDateTime;
@@ -10,6 +12,8 @@ import java.util.Set;
 
 public class TodoCreateEditView extends JFrame {
 
+    private static final Logger LOG = LoggerFactory.getLogger(TodoCreateEditView.class);
+
     private JTextField todoName;
     private JTextArea todoDescription;
     private JTextField todoDate;
@@ -17,6 +21,7 @@ public class TodoCreateEditView extends JFrame {
     private Set<TodoCreateListener> listeners = new HashSet<>();
 
     public void init(Todo todo) {
+        LOG.debug("Initializing TodoCreateEditView");
         var form = new JPanel();
         form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
 
@@ -48,10 +53,12 @@ public class TodoCreateEditView extends JFrame {
     }
 
     public void addTodoCreateEventListener(TodoCreateListener listener) {
+        LOG.debug("Adding TodoCreateEventListener");
         this.listeners.add(listener);
     }
 
     private void save(Todo item) {
+        LOG.debug("Saving Todo={}", item.getName());
         item.setName(todoName.getText());
         item.setDescription(todoDescription.getText());
         item.setExpire(LocalDateTime.parse(todoDate.getText()));
@@ -59,6 +66,7 @@ public class TodoCreateEditView extends JFrame {
     }
 
     private void create() {
+        LOG.debug("Creating new Todo={}", todoName.getText());
         Todo todo = new Todo(todoName.getText(), todoDescription.getText(), LocalDateTime.parse(todoDate.getText()));
         for (var listener : listeners) {
             listener.create(new TodoCreateEvent(this, todo));
