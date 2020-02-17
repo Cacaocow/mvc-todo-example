@@ -20,6 +20,12 @@ public class Todo implements Observable {
 
     private Set<ObservableListener> listeners = new HashSet<>();
 
+    public Todo(String name, String description, LocalDateTime expire) {
+        this.name = name;
+        this.description = description;
+        this.expire = expire;
+    }
+
     @Override
     public void registerEventListener(ObservableListener listener) {
         listeners.add(listener);
