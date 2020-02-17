@@ -1,4 +1,4 @@
-package com.cacaocow.mvcexample.view;
+package com.cacaocow.mvcexample.controller;
 
 import com.cacaocow.mvcexample.model.Todo;
 import lombok.AllArgsConstructor;

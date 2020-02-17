@@ -1,4 +1,4 @@
-package com.cacaocow.mvcexample.view;
+package com.cacaocow.mvcexample.controller;
 
 @FunctionalInterface
 public interface TodoCreateListener {

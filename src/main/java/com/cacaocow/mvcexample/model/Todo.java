@@ -4,12 +4,14 @@ import com.cacaocow.mvcexample.util.Observable;
 import com.cacaocow.mvcexample.util.ObservableEvent;
 import com.cacaocow.mvcexample.util.ObservableListener;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.var;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
+@NoArgsConstructor
 public class Todo implements Observable {
     @Getter
     private String name;

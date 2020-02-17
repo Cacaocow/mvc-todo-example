@@ -18,7 +18,7 @@ public class TodoCreateEditView extends JFrame {
     private JTextArea todoDescription;
     private JTextField todoDate;
 
-    private Set<TodoCreateListener> listeners = new HashSet<>();
+    private Set<TodoViewEventListener> listeners = new HashSet<>();
 
     public void init(Todo todo) {
         LOG.debug("Initializing TodoCreateEditView");
@@ -43,33 +43,45 @@ public class TodoCreateEditView extends JFrame {
             todoName.setText(todo.getName());
             todoDescription.setText(todo.getDescription());
             todoDate.setText(todo.getExpire().toString());
-            saveButton.addActionListener(e -> save(todo));
+            saveButton.addActionListener(e -> raiseEvent(TodoEventType.SAVE));
         } else {
-            saveButton.addActionListener(e -> create());
+            saveButton.addActionListener(e -> raiseEvent(TodoEventType.CREATED));
         }
 
         form.add(saveButton);
         this.add(form);
     }
 
-    public void addTodoCreateEventListener(TodoCreateListener listener) {
+    public void addTodoCreateEventListener(TodoViewEventListener listener) {
         LOG.debug("Adding TodoCreateEventListener");
         this.listeners.add(listener);
     }
 
-    private void save(Todo item) {
-        LOG.debug("Saving Todo={}", item.getName());
-        item.setName(todoName.getText());
-        item.setDescription(todoDescription.getText());
-        item.setExpire(LocalDateTime.parse(todoDate.getText()));
-        super.dispose();
+    public String getTodoName() {
+        return this.todoName.getText();
     }
 
-    private void create() {
-        LOG.debug("Creating new Todo={}", todoName.getText());
-        Todo todo = new Todo(todoName.getText(), todoDescription.getText(), LocalDateTime.parse(todoDate.getText()));
+    public String getTodoDescription() {
+        return this.todoDescription.getText();
+    }
+
+    public String getTodoExpire() {
+        return this.todoDate.getText();
+    }
+
+    private void raiseEvent(TodoEventType type) {
+        switch (type) {
+            case CREATED:
+                LOG.debug("Raising create new Todo={}", todoName.getText());
+                break;
+            case SAVE:
+                LOG.debug("Raising save Todo={}", todoName.getText());
+                break;
+            default:
+                LOG.error("Unexpected event type={}", type);
+        }
         for (var listener : listeners) {
-            listener.create(new TodoCreateEvent(this, todo));
+            listener.listen(new TodoViewEvent(this, type));
         }
         super.dispose();
     }
