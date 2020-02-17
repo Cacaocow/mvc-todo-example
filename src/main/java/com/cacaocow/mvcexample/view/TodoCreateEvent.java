@@ -1,11 +1,12 @@
 package com.cacaocow.mvcexample.view;
 
+import com.cacaocow.mvcexample.model.Todo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter
 @AllArgsConstructor
-public class TodoViewEvent {
+@Getter
+public class TodoCreateEvent {
     private Object source;
-    private TodoEventType type;
+    private Todo todo;
 }

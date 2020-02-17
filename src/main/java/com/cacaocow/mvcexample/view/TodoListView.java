@@ -29,7 +29,7 @@ public class TodoListView extends JFrame {
             this.remove(todos);
         } else {
             var createButton = new JButton("Create");
-            createButton.addActionListener(e -> raiseTodoViewEvent(TodoViewEvent.Type.CREATE));
+            createButton.addActionListener(e -> raiseTodoViewEvent(TodoEventType.CREATE));
             this.add(createButton, BorderLayout.PAGE_END);
         }
 
@@ -45,7 +45,7 @@ public class TodoListView extends JFrame {
         LOG.debug("Finished initializing TodoListView");
     }
 
-    protected void raiseTodoViewEvent(TodoViewEvent.Type type) {
+    protected void raiseTodoViewEvent(TodoEventType type) {
         for (var listener : listeners) {
             listener.listen(new TodoViewEvent(this, type));
         }
@@ -70,11 +70,11 @@ class TodoItem extends JPanel {
 
         var editButton = new JButton("Edit");
         editButton.setEnabled(true);
-        editButton.addActionListener(e -> raiseEvent(TodoViewEvent.Type.EDIT, todo));
+        editButton.addActionListener(e -> raiseEvent(TodoEventType.EDIT, todo));
 
         var deleteButton = new JButton("Delete");
         deleteButton.setEnabled(true);
-        deleteButton.addActionListener(e -> raiseEvent(TodoViewEvent.Type.DELETE, todo));
+        deleteButton.addActionListener(e -> raiseEvent(TodoEventType.DELETE, todo));
 
         this.add(todoName);
         this.add(todoDescription);
@@ -102,7 +102,7 @@ class TodoItem extends JPanel {
         });
     }
 
-    protected void raiseEvent(TodoViewEvent.Type type, Todo item) {
+    protected void raiseEvent(TodoEventType type, Todo item) {
         LOG.debug("Raise TodoViewEvent type={} from item '{}'", type, item.getName());
         for (var listener : listeners) {
             listener.listen(new TodoViewEvent(item, type));
