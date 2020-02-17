@@ -27,16 +27,17 @@ public class TodoListView extends JFrame {
         if (todos != null) {
             LOG.debug("Removing previous todo list view");
             this.remove(todos);
+        } else {
+            var createButton = new JButton("Create");
+            createButton.addActionListener(e -> raiseTodoViewEvent(TodoViewEvent.Type.CREATE));
+            this.add(createButton, BorderLayout.PAGE_END);
         }
+
         todos = new JPanel();
         todos.setLayout(new BoxLayout(todos, BoxLayout.Y_AXIS));
         todoList.stream().map(t -> new TodoItem(listeners, t)).forEach(t -> todos.add(t));
         todos.setFocusable(true);
         this.add(todos);
-
-        var createButton = new JButton("Create");
-        createButton.addActionListener(e -> raiseTodoViewEvent(TodoViewEvent.Type.CREATE));
-        this.add(createButton, BorderLayout.PAGE_END);
 
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
