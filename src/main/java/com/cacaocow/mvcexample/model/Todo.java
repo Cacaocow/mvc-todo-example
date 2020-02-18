@@ -5,6 +5,7 @@ import com.cacaocow.mvcexample.util.ObservableEvent;
 import com.cacaocow.mvcexample.util.ObservableListener;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import lombok.var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
+@ToString
 public class Todo implements Observable {
 
     private static final Logger LOG = LoggerFactory.getLogger(Todo.class);
