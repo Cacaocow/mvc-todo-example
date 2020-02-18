@@ -51,7 +51,7 @@ public class TodoCreateEditView extends JFrame {
     public void prefillForm(String todoName, String todoDescription, String todoExpire) {
         this.todoName.setText(todoName);
         this.todoDescription.setText(todoDescription);
-        this.todoDescription.setText(todoExpire);
+        this.todoDate.setText(todoExpire);
     }
 
     public void addTodoCreateEventListener(TodoViewEventListener listener) {
