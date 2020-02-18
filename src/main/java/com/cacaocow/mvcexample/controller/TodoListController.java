@@ -45,7 +45,10 @@ public class TodoListController {
     }
 
     private void refreshViewModel() {
-        view.init(model);
+        view.init();
+        for (var todo : model) {
+            view.addTodoItem(todo.getName(), todo.getDescription(), todo.getExpire().toString(), todo);
+        }
     }
 
     private void initCreateView(Todo todo) {

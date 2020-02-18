@@ -1,6 +1,5 @@
 package com.cacaocow.mvcexample.view;
 
-import com.cacaocow.mvcexample.model.Todo;
 import lombok.var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +19,7 @@ public class TodoCreateEditView extends JFrame {
 
     private Set<TodoViewEventListener> listeners = new HashSet<>();
 
-    public void init(Todo todo) {
+    public void init(boolean save) {
         LOG.debug("Initializing TodoCreateEditView");
         var form = new JPanel();
         form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
@@ -39,10 +38,7 @@ public class TodoCreateEditView extends JFrame {
 
         var saveButton = new JButton("Save");
 
-        if (todo != null) {
-            todoName.setText(todo.getName());
-            todoDescription.setText(todo.getDescription());
-            todoDate.setText(todo.getExpire().toString());
+        if (save) {
             saveButton.addActionListener(e -> raiseEvent(TodoEventType.SAVE));
         } else {
             saveButton.addActionListener(e -> raiseEvent(TodoEventType.CREATED));
@@ -50,6 +46,12 @@ public class TodoCreateEditView extends JFrame {
 
         form.add(saveButton);
         this.add(form);
+    }
+
+    public void prefillForm(String todoName, String todoDescription, String todoExpire) {
+        this.todoName.setText(todoName);
+        this.todoDescription.setText(todoDescription);
+        this.todoDescription.setText(todoExpire);
     }
 
     public void addTodoCreateEventListener(TodoViewEventListener listener) {

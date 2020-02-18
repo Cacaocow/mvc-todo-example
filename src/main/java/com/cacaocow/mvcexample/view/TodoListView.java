@@ -1,6 +1,6 @@
 package com.cacaocow.mvcexample.view;
 
-import com.cacaocow.mvcexample.model.Todo;
+import com.cacaocow.mvcexample.util.Observable;
 import lombok.var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,7 +8,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.*;
 import java.awt.*;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class TodoListView extends JFrame {
@@ -22,7 +21,7 @@ public class TodoListView extends JFrame {
         this.setLayout(new BorderLayout());
     }
 
-    public void init(List<Todo> todoList) {
+    public void init() {
         LOG.debug("Initializing TodoListView...");
         if (todos != null) {
             LOG.debug("Removing previous todo list view");
@@ -35,7 +34,6 @@ public class TodoListView extends JFrame {
 
         todos = new JPanel();
         todos.setLayout(new BoxLayout(todos, BoxLayout.Y_AXIS));
-        todoList.stream().map(t -> new TodoItem(listeners, t)).forEach(t -> todos.add(t));
         todos.setFocusable(true);
         this.add(todos);
 
@@ -43,6 +41,11 @@ public class TodoListView extends JFrame {
 
         this.revalidate();
         LOG.debug("Finished initializing TodoListView");
+    }
+
+    public void addTodoItem(String todoName, String todoDescription, String todoExpire, Observable model) {
+        this.todos.add(new TodoItem(listeners, todoName, todoDescription, todoExpire, model));
+        this.todos.revalidate();
     }
 
     protected void raiseTodoViewEvent(TodoEventType type) {
@@ -59,14 +62,15 @@ public class TodoListView extends JFrame {
 class TodoItem extends JPanel {
     private static final Logger LOG = LoggerFactory.getLogger(TodoItem.class);
     private Set<TodoViewEventListener> listeners;
-    TodoItem(Set<TodoViewEventListener> listeners, Todo todo) {
+
+    TodoItem(Set<TodoViewEventListener> listeners, String name, String description, String expire, Observable todo) {
         this.listeners = listeners;
         this.setLayout(new FlowLayout());
-        var todoName = new JLabel(todo.getName());
+        var todoName = new JLabel(name);
 
-        var todoDescription = new JLabel(todo.getDescription());
+        var todoDescription = new JLabel(description);
 
-        var todoDate = new JLabel(todo.getExpire().toString());
+        var todoDate = new JLabel(expire);
 
         var editButton = new JButton("Edit");
         editButton.setEnabled(true);
@@ -102,8 +106,8 @@ class TodoItem extends JPanel {
         });
     }
 
-    protected void raiseEvent(TodoEventType type, Todo item) {
-        LOG.debug("Raise TodoViewEvent type={} from item '{}'", type, item.getName());
+    protected void raiseEvent(TodoEventType type, Observable item) {
+        LOG.debug("Raise TodoViewEvent type={} from item '{}'", type, item);
         for (var listener : listeners) {
             listener.listen(new TodoViewEvent(item, type));
         }

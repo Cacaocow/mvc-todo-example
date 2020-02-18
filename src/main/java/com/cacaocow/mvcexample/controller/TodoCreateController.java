@@ -22,7 +22,10 @@ public class TodoCreateController {
         LOG.debug("Initializing TodoCreateController");
         model = todo;
         view = new TodoCreateEditView();
-        view.init(todo);
+        view.init(todo != null);
+        if (todo != null) {
+            view.prefillForm(todo.getName(), todo.getDescription(), todo.getExpire().toString());
+        }
         view.setSize(200, 400);
         view.setLocationRelativeTo(null);
         view.addTodoCreateEventListener(e -> {
