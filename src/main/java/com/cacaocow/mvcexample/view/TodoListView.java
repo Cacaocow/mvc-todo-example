@@ -1,6 +1,8 @@
 package com.cacaocow.mvcexample.view;
 
 import com.cacaocow.mvcexample.util.Observable;
+import com.cacaocow.mvcexample.util.ObservableEvent;
+import com.cacaocow.mvcexample.util.ObservableListener;
 import lombok.var;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,6 +28,11 @@ public class TodoListView extends JFrame {
         if (todos != null) {
             LOG.debug("Removing previous todo list view");
             this.remove(todos);
+            for (var comp : todos.getComponents()) {
+                if (comp instanceof TodoItem) {
+                    ((TodoItem) comp).dispose();
+                }
+            }
         } else {
             var createButton = new JButton("Create");
             createButton.addActionListener(e -> raiseTodoViewEvent(TodoEventType.CREATE));
@@ -59,18 +66,24 @@ public class TodoListView extends JFrame {
     }
 }
 
-class TodoItem extends JPanel {
+class TodoItem extends JPanel implements ObservableListener {
     private static final Logger LOG = LoggerFactory.getLogger(TodoItem.class);
     private Set<TodoViewEventListener> listeners;
 
+    private JLabel todoName;
+    private JLabel todoDescription;
+    private JLabel todoDate;
+    private Observable observable;
+
     TodoItem(Set<TodoViewEventListener> listeners, String name, String description, String expire, Observable todo) {
         this.listeners = listeners;
+        this.observable = todo;
         this.setLayout(new FlowLayout());
-        var todoName = new JLabel(name);
+        todoName = new JLabel(name);
 
-        var todoDescription = new JLabel(description);
+        todoDescription = new JLabel(description);
 
-        var todoDate = new JLabel(expire);
+        todoDate = new JLabel(expire);
 
         var editButton = new JButton("Edit");
         editButton.setEnabled(true);
@@ -86,24 +99,7 @@ class TodoItem extends JPanel {
         this.add(editButton);
         this.add(deleteButton);
 
-        todo.registerEventListener(e -> {
-            switch (e.getPropertyName()) {
-                case "name":
-                    todoName.setText(e.getNewValue().toString());
-                    break;
-                case "description":
-                    todoDescription.setText(e.getNewValue().toString());
-                    break;
-                case "expire":
-                    todoDate.setText(e.getNewValue().toString());
-                    break;
-                default:
-                    // Ignore
-                    break;
-            }
-            this.revalidate();
-            this.repaint();
-        });
+        todo.registerEventListener(this);
     }
 
     protected void raiseEvent(TodoEventType type, Observable item) {
@@ -111,5 +107,27 @@ class TodoItem extends JPanel {
         for (var listener : listeners) {
             listener.listen(new TodoViewEvent(item, type));
         }
+    }
+
+    @Override
+    public void propertyChangedEvent(ObservableEvent e) {
+        switch (e.getPropertyName()) {
+            case "name":
+                todoName.setText(e.getNewValue().toString());
+                break;
+            case "description":
+                todoDescription.setText(e.getNewValue().toString());
+                break;
+            case "expire":
+                todoDate.setText(e.getNewValue().toString());
+                break;
+            default:
+                // Ignore
+                break;
+        }
+    }
+
+    public void dispose() {
+        observable.unregisterEventListener(this);
     }
 }
