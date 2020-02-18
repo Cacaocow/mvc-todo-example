@@ -52,7 +52,7 @@ public class TodoListController {
     }
 
     private void initCreateView(Todo todo) {
-        var controller = new TodoCreateController();
+        var controller = new TodoCreateEditController();
         controller.init(todo);
         controller.addTodoCreateListener(e -> addTodo(e.getTodo()));
         controller.showView(true);

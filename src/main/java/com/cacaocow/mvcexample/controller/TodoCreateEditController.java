@@ -10,16 +10,16 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-public class TodoCreateController {
+public class TodoCreateEditController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(TodoCreateController.class);
+    private static final Logger LOG = LoggerFactory.getLogger(TodoCreateEditController.class);
 
     private TodoCreateEditView view;
     private Set<TodoCreateListener> listeners = new HashSet<>();
     private Todo model;
 
     public void init(Todo todo) {
-        LOG.debug("Initializing TodoCreateController");
+        LOG.debug("Initializing TodoCreateEditController");
         model = todo;
         view = new TodoCreateEditView();
         view.init(todo != null);
